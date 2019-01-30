@@ -1,16 +1,15 @@
 # Не идеальная программа для вычисление идеального веса
 
-puts "Как тебя зовут?"
-name = gets.chomp.capitalize
+puts 'Как тебя зовут?'
+name = gets.chomp
 
-puts "Напиши свой рост в сантиметрах"
-height = gets.chomp
+puts 'Напиши свой рост в сантиметрах'
+height = gets.chomp.to_i
 
-ideal_weight = height.to_i-110
+ideal_weight = height - 110
 
-unless ideal_weight<0
-	puts "#{name}, привет! Для Вас идеальный вес #{ideal_weight.to_s} кг"
+if ideal_weight < 0
+  puts "#{name}, привет! Ваш вес уже оптимальный!"
 else
-	puts "#{name}, привет! Ваш вес уже оптимальный!"
+  puts "#{name}, привет! Для Вас идеальный вес #{ideal_weight} кг"
 end
-
