@@ -11,12 +11,11 @@ loop do
   products[product] = [price, count]
 end
 puts products
+total = 0
 products.each do |name, array|
-  sum = array[0] * array[1]
-  puts "На покупку #{name} потрачено #{sum}"
+  sum_product = array[0] * array[1]
+  total+=sum_product
+  puts "На покупку #{name} потрачено #{sum_product}"
 end
-sum = 0
-products.each_value do |array|
-  sum += array[0] * array[1]
-end
-puts 'Сумма всех расходов ' + sum.to_s
+
+puts 'Сумма всех расходов ' + total.to_s

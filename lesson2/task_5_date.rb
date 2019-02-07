@@ -2,7 +2,7 @@
 
 months = {
   '1' => 31,
-  '2' => nil,
+  '2' => 28,
   '3' => 31,
   '4' => 30,
   '5' => 31,
@@ -30,7 +30,7 @@ months['2'] = if year % 400 == 0
                 29
               else
                 28
-                  end
+              end
 
 count = 0
 months.each { |month_hash, days_m| count += days_m if month_hash.to_i < month_input }
