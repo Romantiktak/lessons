@@ -1,4 +1,4 @@
-products = Hash.new('no product')
+products = {}
 loop do
   puts 'Введите название товара или СТОП для выхода'
   product = gets.chomp.downcase!
@@ -14,7 +14,7 @@ puts products
 total = 0
 products.each do |name, array|
   sum_product = array[0] * array[1]
-  total+=sum_product
+  total += sum_product
   puts "На покупку #{name} потрачено #{sum_product}"
 end
 

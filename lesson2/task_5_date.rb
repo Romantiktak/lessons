@@ -1,20 +1,5 @@
 # Найти порядковый номер даты в году
-
-months = {
-  '1' => 31,
-  '2' => 28,
-  '3' => 31,
-  '4' => 30,
-  '5' => 31,
-  '6' => 30,
-  '7' => 31,
-  '8' => 31,
-  '9' => 30,
-  '10' => 31,
-  '11' => 30,
-  '12' => 31
-}
-
+months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 puts 'Введите год'
 year = gets.chomp.to_i
 puts 'Введите месяц'
@@ -22,18 +7,18 @@ month_input = gets.chomp.to_i
 puts 'Введите число'
 day_input = gets.chomp.to_i
 
-months['2'] = if year % 400 == 0
-                29
-              elsif year % 100 == 0
-                28
-              elsif year % 4 == 0
-                29
-              else
-                28
-              end
-
+  if (year % 400).zero?
+    months[1] = 29
+  elsif (year % 100).zero?
+    months[1] = 28
+  elsif (year % 4).zero?
+    months[1] = 29
+  else
+    months[1] = 28
+  end
 count = 0
-months.each { |month_hash, days_m| count += days_m if month_hash.to_i < month_input }
+months.map.with_index do |days_array, i|
+  count += days_array if i < month_input - 1
+end
 count += day_input
-
 puts "Введенная дата будет #{count}-ая в году"
