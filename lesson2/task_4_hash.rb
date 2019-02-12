@@ -1,11 +1,8 @@
 # Создадим массив букв-символов
 alphabet = [*('a'..'z')]
 # Создадим hash гласных
-vowels = { 'a' => 0, 'e' => 0, 'i' => 0, 'o' => 0, 'u' => 0 }
+vowels = [ 'a', 'e' , 'i' , 'o', 'u' ]
 # Первая буква алфавита соответсвует нулевой в массиве
-vowels.each_key do |letter|
-  i = alphabet.index(letter) + 1
-  vowels[letter] = i
-end
-
-puts vowels
+vowels_with_index = {}
+vowels.each {|letter| vowels_with_index[letter] = alphabet.index(letter)+1}
+puts vowels_with_index
