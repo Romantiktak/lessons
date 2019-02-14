@@ -1,25 +1,28 @@
 class Stantion
   attr_reader :trains
-  attr_accessor :name, :type_trains
+  attr_accessor :name
 
   def initialize(name)
     @name = name
     @trains = []
-    @type_trains = { passanger: 0, cargo: 0 }
   end
 
   def add_train(train)
     @trains << train
-    @type_trains[train.type_train] += 1
   end
 
   def delete_train(train)
     @trains.delete(train)
-    @type_trains[train.type_train] -= 1
   end
 
-  def all_train
-    @type_trains[:passanger] + @type_trains[:cargo]
+  def type_train
+    passanger = 0
+    cargo = 0
+    @trains.each do |train|
+      passanger += 1 if train.type == :passanger
+      cargo += 1 if train.type == :cargo
+    end
+    { :passanger => passanger, :cargo => cargo }
   end
 end
 
@@ -40,12 +43,11 @@ class Route
 end
 
 class Train
-  attr_writer :index_station
-  attr_reader :number_train, :type_train, :speed, :wagons, :stantion, :index_station
-  # type_train = [:passanger, :cargo]
-  def initialize(number_train, type_train, wagons = 1)
+  attr_reader :number_train, :type, :speed, :wagons, :stantion, :index_station
+  # type = [:passanger, :cargo]
+  def initialize(number_train, type, wagons = 1)
     @number_train = number_train
-    @type_train = type_train
+    @type = type
     @wagons = wagons
     @speed = 0
   end
