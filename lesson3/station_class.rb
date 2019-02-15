@@ -81,18 +81,16 @@ class Train
   end
 
   def got_to_next_station
-    next_st = next_station
-    unless next_st.nil?
+    if next_station
       @stantion.delete_train(self)
-      @stantion = next_st
+      @stantion = next_station
       @index_station += 1
       @stantion.add_train(self)
     end
   end
 
   def got_to_previous_station
-    previous_st = previous_station
-    unless previous_st.nil?
+    if previous_station
       @stantion.delete_train(self)
       @stantion = previous_station
       @index_station -= 1
