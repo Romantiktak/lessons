@@ -4,6 +4,7 @@ class Train
     @number_train = number_train
     @wagons = []
     @speed = 0
+    @type = nil
   end
 
   def add_speed(count = 10)
@@ -26,41 +27,46 @@ class Train
     @index_station = nil
   end
 
-  def got_to_next_station
-    if next_station
+  def next_station
+    if @index_station < @route_train.stantions.size - 1
       @stantion.delete_train(self)
-      @stantion = next_station
+      @stantion = @route_train.stantions[@index_station + 1]
       @index_station += 1
       @stantion.add_train(self)
     end
   end
 
-  def got_to_previous_station
-    if previous_station
+  def previous_station
+    if @index_station > 0
       @stantion.delete_train(self)
-      @stantion = previous_station
+      @stantion = @route_train.stantions[@index_station - 1]
       @index_station -= 1
       @stantion.add_train(self)
     end
   end
 
-  def next_station
-    return @route_train.stantions[@index_station + 1] if @index_station < @route_train.stantions.size - 1
-  end
-
-  def previous_station
-    return @route_train.stantions[@index_station - 1] if @index_station > 0
-  end
-
-  protected
-#add_wagon, delete_wagon необходимо переопределить для того
-#чтобы добавлять и удалять только соответсвующие типы вагонов
   def add_wagon(wagon)
-    @wagons << wagon if @speed.zero?
+    @wagons << wagon if @speed.zero? && @type == wagon.class
   end
 
   def delete_wagon(wagon)
     @wagons.delete(wagon) if @speed.zero?
   end
+end
 
+class PassengerTrain < Train
+  attr_reader :type
+
+  def initialize(number_train)
+    super
+    @type = PassengerWagon
+  end
+end
+
+class CargoTrain < Train
+  attr_reader :type
+  def initialize(number_train)
+    super
+    @type = CargoWagon
+  end
 end
