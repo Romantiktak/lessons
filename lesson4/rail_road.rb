@@ -8,7 +8,7 @@ class RailRoad
     @routes = []
   end
 
-  def start
+   start
     loop do
       puts "Введите 0 чтобы выйти"
       puts "Введите 1 чтобы создать станцию"
@@ -18,8 +18,9 @@ class RailRoad
       puts "Введите 5 чтобы создать вагоны"
       puts "Введите 6 чтобы добавить вагон к поезду "
       puts "Введите 7 чтобы отцепить вагон от поезда"
-      puts "Введите 8 чтобы переместить вагон на другую станцию"
+      puts "Введите 8 чтобы переместить поезд на другую станцию"
       puts "Введите 9 чтобы отобразить список станций"
+      puts "Введите 10 чтобы отобразить список поездов"
       menu = gets.chomp.to_i
       case menu
       when 0
@@ -36,6 +37,14 @@ class RailRoad
         create_wagons
       when 6
         add_wagon_to_train
+      when 7
+        delete_wagon_from_train
+      when 8
+        move_train_to_station
+      when 9
+        show_stantions
+      when 10
+        show_trains
       else
         puts "Некорректный ввод"
       end
@@ -53,7 +62,6 @@ class RailRoad
       end
     end
   end
-
 
   def create_train
     loop do
@@ -112,19 +120,23 @@ class RailRoad
     puts "Train added on route"
   end
 
-
   def show_stantions
     puts "Вывод списка стаций"
-    @stantions.each_with_index {|stantion, index| puts "#{index + 1}:  #{stantion.name}"}
+    @stantions.each_with_index {|stantion, index| puts "#{index + 1}: #{stantion.name}"}
   end
 
   def show_trains
-    puts "Список всех поездов" if @trains.each_with_index {|train, index| puts "#{index + 1}: №#{train.number_train} Тип #{train.class}"}
+    puts "Список всех поездов"
+    @trains.each_with_index do |train, index|
+      puts "#{index + 1}: №#{train.number_train} Тип #{train.class}"
+    end
   end
 
   def show_routes
     puts "Список имеющихся маршрутов"
-    @routes.each_with_index {|route, index| puts "#{index + 1}: #{route} кол-во станций #{route.stantions.size}"}
+    @routes.each_with_index do |route, index|
+      puts "#{index + 1}: #{route} кол-во станций #{route.stantions.size}"
+    end
   end
 
   def show_wagons(train)
@@ -134,7 +146,9 @@ class RailRoad
     elsif train.class == CargoTrain
       class_type = CargoWagon
     end
-    @wagons.each_with_index {|wagon,index| puts "#{index + 1}: #{wagon}" if wagon.class == class_type}
+    @wagons.each_with_index do |wagon,index|
+      puts "#{index + 1}: #{wagon}" if wagon.class == class_type
+    end
   end
 
   def create_wagons
@@ -168,18 +182,46 @@ class RailRoad
     puts "Введите номера вагонов через запятую"
     wagons_index = gets.chomp.split(",")
     wagons_index.each do |i|
-      @trains[train_index - 1].add_wagon(@wagons[i.to_i-1])
+      @trains[train_index - 1].add_wagon(@wagons[i.to_i - 1])
     end
   end
 
-  #
-  # 2 create routes and control stantions (add,delete) здесь создаются станции и количество станций
-  # 3 Train for route 3 определитьесь грузовый или пассажирский поезд
-  # 4 add wagons with train
-  # 5 delete wagons from train
-  # 6 move train previous and aro 6 вперед или назад
-  # 7 list stantions 7 and trains on stantion
-  #
+  def delete_wagon_from_train
+    show_trains
+    puts "Введите номер вагона"
+    train_index = gets.chomp.to_i
+    puts "Перечислите через запятую номера вагонов, которые нужно отцепить:"
+    @trains[train_index - 1].wagons.each_with_index do |wagon ,index|
+      puts "#{index + 1}: #{wagon}"
+    end
+    wagons_index = gets.chomp.split(",").map! {|x| x = x.to_i}
+    wagons_index.reverse_each do |i|
+      wagon_delete = @trains[train_index - 1].wagons[i - 1]
+      @trains[train_index - 1].delete_wagon(wagon_delete)
+    end
+  end
 
+  def move_train_to_station
+    show_trains
+    puts "Введите номер поезда"
+    train_index = gets.chomp.to_i
+    loop do
+      puts "Поезд стоит на станции #{@trains[train_index - 1].stantion.name}"
+      puts "Введите 0 для выхода"
+      puts "Введите 1 для перемещения поезда на следующую станцию"
+      puts "Введите 2 для перемещения поезда на предыдущую станцию"
+      move = gets.chomp.to_i
+      case move
+      when 0
+        break
+      when 1
+        @trains[train_index - 1].next_station
+      when 2
+        @trains[train_index - 1].previous_station
+      else
+        puts "input no correct"
+      end
+    end
+  end
 end
 
