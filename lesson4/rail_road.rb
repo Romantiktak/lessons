@@ -8,7 +8,7 @@ class RailRoad
     @routes = []
   end
 
-   start
+   def start
     loop do
       puts "Введите 0 чтобы выйти"
       puts "Введите 1 чтобы создать станцию"
