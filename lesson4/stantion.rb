@@ -1,10 +1,13 @@
 class Stantion
+  include InstanceCounter
   attr_reader :trains
   attr_accessor :name
-
+  @@count_stantions = 0
   def initialize(name)
     @name = name
     @trains = []
+    @@count_stantions += 1
+    register_instance
   end
 
   def add_train(train)
@@ -23,5 +26,9 @@ class Stantion
       cargo += 1 if train.class == CargoTrain
     end
     { PassengerTrain => passanger, CargoTrain => cargo }
+  end
+
+  def self.all
+    @@count_stantions
   end
 end

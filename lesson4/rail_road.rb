@@ -1,4 +1,5 @@
 class RailRoad
+  include InstanceCounter
   attr_reader :trains, :wagons, :stantions, :routes
 
   def initialize
@@ -21,6 +22,8 @@ class RailRoad
       puts 'Введите 8 чтобы переместить поезд на другую станцию'
       puts 'Введите 9 чтобы отобразить список станций'
       puts 'Введите 10 чтобы отобразить список поездов'
+      puts 'Введите 11 чтобы найти поезд'
+      puts 'Введите 12 чтобы узнать уоличество экземпларов классов'
       menu = gets.chomp.to_i
       case menu
       when 0
@@ -45,6 +48,10 @@ class RailRoad
         show_stantions
       when 10
         show_trains
+      when 11
+        find_train
+      when 12
+        objects_of_classes
       else
         puts 'Некорректный ввод'
       end
@@ -73,12 +80,16 @@ class RailRoad
     when 1
       puts 'Введите номер пассажирского поезда'
       number = gets.chomp.to_i
-      @trains << PassengerTrain.new(number)
+      puts "Введите название компании поезда"
+      company = gets.chomp
+      @trains << PassengerTrain.new(number, company)
     when 2
       puts "Введите номер грузового
       поезда"
       number = gets.chomp.to_i
-      @trains << CargoTrain.new(number)
+      puts "Введите название компании поезда"
+      company = gets.chomp
+      @trains << CargoTrain.new(number, company)
     else
       create_train
     end
@@ -119,12 +130,13 @@ class RailRoad
   def show_stantions
     puts 'Вывод списка стаций'
     @stantions.each_with_index { |stantion, index| puts "#{index + 1}: #{stantion.name}" }
+    puts "Всего станций #{Stantion.all}"
   end
 
   def show_trains
     puts 'Список всех поездов'
     @trains.each_with_index do |train, index|
-      puts "#{index + 1}: №#{train.number_train} Тип #{train.class}"
+      puts "#{index + 1}: №#{train.number_train} #{train.company} #{train.class}"
     end
   end
 
@@ -143,7 +155,7 @@ class RailRoad
       class_type = CargoWagon
     end
     @wagons.each_with_index do |wagon, index|
-      puts "#{index + 1}: #{wagon}" if wagon.class == class_type
+      puts "#{index + 1}: #{wagon} #{wagon.company}" if wagon.class == class_type
     end
   end
 
@@ -154,13 +166,15 @@ class RailRoad
     type = gets.chomp.to_i
     puts 'Сколько вагонов создать?'
     count = gets.chomp.to_i
+    puts 'Какой фирмы эти вагоны?'
+    company = gets.chomp
     if type == 1
       count.times do
-        @wagons << PassengerWagon.new
+        @wagons << PassengerWagon.new(company)
       end
     elsif type == 2
       count.times do
-        @wagons << CargoWagon.new
+        @wagons << CargoWagon.new(company)
       end
     else
       start
@@ -219,5 +233,15 @@ class RailRoad
     else
       move_train_to_station
     end
+  end
+
+  def find_train
+    puts 'Введите номер поезда'
+    number = gets.chomp.to_i
+    Train.find(number, self)
+  end
+
+  def objects_of_classes
+    puts "Поездов #{Train.instances} Станций Маршрутов"
   end
 end

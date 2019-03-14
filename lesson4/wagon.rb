@@ -1,8 +1,7 @@
 class Wagon
+  include BrandName
+  def initialize(company)
+    self.company = company
+  end
 end
 
-class PassengerWagon < Wagon
-end
-
-class CargoWagon < Wagon
-end
