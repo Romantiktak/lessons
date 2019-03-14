@@ -23,7 +23,7 @@ class RailRoad
       puts 'Введите 9 чтобы отобразить список станций'
       puts 'Введите 10 чтобы отобразить список поездов'
       puts 'Введите 11 чтобы найти поезд'
-      puts 'Введите 12 чтобы узнать уоличество экземпларов классов'
+      puts 'Введите 12 чтобы узнать количество экземпларов классов'
       menu = gets.chomp.to_i
       case menu
       when 0
@@ -242,6 +242,6 @@ class RailRoad
   end
 
   def objects_of_classes
-    puts "Поездов #{Train.instances} Станций Маршрутов"
+    puts "Позда #{Train.instances} Станции #{Stantion.instances} Маршруты #{Route.instances} "
   end
 end
