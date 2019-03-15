@@ -58,6 +58,7 @@ class RailRoad
     end
  end
 
+  # создание станций
   def create_stantion
     puts 'Введите название для создания станции или Enter для выхода'
     st_name = gets.chomp
@@ -69,6 +70,7 @@ class RailRoad
     end
   end
 
+  # создание поездов
   def create_train
     puts 'Введите 0 для выхода'
     puts 'Введите 1 для создания пассажирского поезда'
@@ -95,6 +97,7 @@ class RailRoad
     end
   end
 
+  # создание маршрутов
   def create_route
     show_stantions
     puts 'Введите номер первой станции маршрута'
@@ -114,6 +117,7 @@ class RailRoad
     end
   end
 
+  # добавление поезда на маршрут
   def add_train_on_route
     show_routes
     puts 'Введите номер маршрута'
@@ -127,12 +131,14 @@ class RailRoad
     puts 'Train added on route'
   end
 
+  # вывод списка станций
   def show_stantions
     puts 'Вывод списка стаций'
     @stantions.each_with_index { |stantion, index| puts "#{index + 1}: #{stantion.name}" }
     puts "Всего станций #{Stantion.all}"
   end
 
+  # Вывод списка поездов
   def show_trains
     puts 'Список всех поездов'
     @trains.each_with_index do |train, index|
@@ -140,6 +146,7 @@ class RailRoad
     end
   end
 
+  # Вывод списка маршрутов
   def show_routes
     puts 'Список имеющихся маршрутов'
     @routes.each_with_index do |route, index|
@@ -147,6 +154,7 @@ class RailRoad
     end
   end
 
+  # Вывод списка вагонов
   def show_wagons(train)
     puts 'Список доступных вагонов'
     if train.class == PassengerTrain
@@ -159,6 +167,7 @@ class RailRoad
     end
   end
 
+  # Создание вагонов
   def create_wagons
     puts 'Введите 1 для создания пассажирских вагонов'
     puts 'Введите 2 для создания грузовых вагонов'
@@ -181,6 +190,7 @@ class RailRoad
     end
   end
 
+  # Прицепить вагон к поезду
   def add_wagon_to_train
     show_trains
     puts 'Введите номер поезда'
@@ -193,6 +203,7 @@ class RailRoad
     end
   end
 
+  # Отцепить вагон от поезда
   def delete_wagon_from_train
     show_trains
     puts 'Введите номер вагона'
@@ -208,6 +219,7 @@ class RailRoad
     end
   end
 
+  # Переместить поезд на следующую станцию
   def move_train_to_station
     show_trains
     puts 'Введите номер поезда'
@@ -215,6 +227,7 @@ class RailRoad
     loop_move_train(train_index)
   end
 
+  # Цикл с выводом меню для перемещения поезда
   def loop_move_train(train_index)
     puts "Поезд стоит на станции #{@trains[train_index - 1].stantion.name}"
     puts 'Введите 0 для выбора поезда или Enter для Выхода'
@@ -235,13 +248,18 @@ class RailRoad
     end
   end
 
+  # Поиск поезда по номеру
   def find_train
     puts 'Введите номер поезда'
     number = gets.chomp.to_i
     Train.find(number, self)
   end
 
+  # Вывод количество экземпляров класса
   def objects_of_classes
-    puts "Позда #{Train.instances} Станции #{Stantion.instances} Маршруты #{Route.instances} "
+    puts "Создано экземпляров CargoTrain: #{CargoTrain.instances}"
+    puts "Создано экземпляров PassengerTrain: #{PassengerTrain.instances}"
+    puts "Создано экземпляров Route: #{Route.instances}"
+    puts "Создано экземпляров Stantion: #{Stantion.instances}"
   end
 end
