@@ -252,7 +252,7 @@ class RailRoad
   def find_train
     puts 'Введите номер поезда'
     number = gets.chomp.to_i
-    Train.find(number, self)
+    Train.find(number)
   end
 
   # Вывод количество экземпляров класса

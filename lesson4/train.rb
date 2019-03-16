@@ -1,14 +1,15 @@
 class Train
   include BrandName
   include InstanceCounter
-  attr_reader :number_train, :speed, :wagons, :stantion, :index_station
+  attr_reader :speed, :wagons, :stantion, :index_station
+  @@trains = {}
   def initialize(number_train, company)
-    @number_train = number_train
     @wagons = []
     @speed = 0
     @type = nil
     self.company = company
     register_instance
+    @@trains[number_train] = self
   end
 
   def add_speed(count = 10)
@@ -57,10 +58,8 @@ class Train
     @wagons.delete(wagon) if @speed.zero?
   end
 
-  def self.find (number_train, road)
-    road.trains.each do |train|
-      puts "Найден #{train}" if train.number_train == number_train
-    end
+  def self.find(number_train)
+    puts "#{@@trains[number_train]}"
   end
 end
 
