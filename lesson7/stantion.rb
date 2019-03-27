@@ -8,8 +8,8 @@ class Stantion
     @name = name
     @trains = []
     @@count_stantions += 1
-    register_instance
     validate!
+    register_instance
   end
 
   def add_train(train)

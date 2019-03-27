@@ -13,10 +13,12 @@ module Validation
     def valid?
       validate!
       true # возвращаем true, если метод validate! не выбросил исключение
-      puts "#{self} успешно создан"
     rescue
       false # возвращаем false, если было исключение
-      puts "Данные не валидны, объект не создан"
+    end
+
+    def valid_zero(number)
+      raise "You can't to inpute zero value" if number.zero?
     end
   end
 end

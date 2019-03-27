@@ -13,4 +13,4 @@ require_relative 'rail_road'
 
 
 road = RailRoad.new
-#road.start
+road.start

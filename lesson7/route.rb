@@ -5,8 +5,8 @@ class Route
 
   def initialize(first_stantion, last_stantion)
     @stantions = [first_stantion, last_stantion]
-    register_instance
     validate!
+    register_instance
   end
 
   def add_stantion(stantion)

@@ -67,6 +67,7 @@ class RailRoad
       start
     else
       @stantions << Stantion.new(st_name)
+      puts "Создана станция #{@stantions.last}"
       create_stantion
     end
   end
@@ -85,20 +86,26 @@ class RailRoad
       number = gets.chomp
       puts "Введите название компании поезда"
       company = gets.chomp
-      if PassengerTrain.new(number, company).valid?
-        @trains << PassengerTrain.new(number, company)
-      end
+      train_validate(PassengerTrain, number, company)
     when 2
       puts "Введите номер грузового
       поезда"
       number = gets.chomp
       puts "Введите название компании поезда"
       company = gets.chomp
-      if CargoTrain.new(number, company).valid?
-        @trains << CargoTrain.new(number, company)
-      end
+      train_validate(CargoTrain, number, company)
     else
       create_train
+    end
+  end
+
+  # создавать поезд, если данные валидны
+  def train_validate(type_train, number, company)
+    if type_train.new(number, company).valid?
+      @trains << type_train.new(number, company)
+      puts "Создан поезд #{@trains.last}"
+    else
+      puts "Поезд не создан, данные не валидны"
     end
   end
 
@@ -107,8 +114,10 @@ class RailRoad
     show_stantions
     puts 'Введите номер первой станции маршрута'
     first_index_stantion = gets.chomp.to_i
+    valid_zero(first_index_stantion)
     puts 'Введите номер конечной станции марщрута'
     last_index_station = gets.chomp.to_i
+    valid_zero(last_index_station)
     @routes << Route.new(@stantions[first_index_stantion - 1], @stantions[last_index_station - 1])
     puts 'Маршрут создан!!!'
     puts 'Введите номера станций для добавления через запятую или Enter для выхода'

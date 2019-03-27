@@ -10,8 +10,9 @@ class Train
     @speed = 0
     @type = nil
     self.company = company
-    register_instance
     @@trains[self] = number_train
+    validate!
+    register_instance
   end
 
   def add_speed(count = 10)
