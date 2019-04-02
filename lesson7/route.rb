@@ -1,24 +1,36 @@
 class Route
   include InstanceCounter
   include Validation
-  attr_reader :stantions
+  attr_accessor :stations
 
-  def initialize(first_stantion, last_stantion)
-    @stantions = [first_stantion, last_stantion]
+  def initialize(first_station, last_station)
+    @stations = [first_station, last_station]
     validate!
     register_instance
   end
 
-  def add_stantion(stantion)
-    @stantions.insert(-2, stantion) unless @stantions.include?(stantion)
+  def add_station(station)
+    raise 'Станция отсутсвует' if station.nil?
+    unless @stations.include?(station)
+      @stations.insert(-2, station)
+      puts 'Станция #{station} добавлена в маршрут'
+    else
+      puts 'Станция не добавлена в маршрут'
+    end
+  rescue
+    puts 'Станция не добавлена в маршрут'
   end
 
-  def delete_stantion(name)
-    @stantions.delete(name) unless (@stantions.first == name) || (@stantions.last == name)
+  def delete_station(name)
+    @stations.delete(name) unless (@stations.first == name) || (@stations.last == name)
   end
 
   protected
   def validate!
-    raise "Stantions should be created" if self.stantions[0].nil? || self.stantions[-1].nil?
+    raise "stations should be created" if self.stations[0].nil? || self.stations[-1].nil?
+    raise "Нельзя дублировать станции в маршруте" if self.stations[0] == self.stations[-1]
+    self.stations.each do |station|
+      raise "You inputed station nocorrect" unless station.class == Station
+    end
   end
 end

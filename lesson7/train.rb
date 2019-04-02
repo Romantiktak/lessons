@@ -2,7 +2,7 @@ class Train
   include BrandName
   include InstanceCounter
   include Validation
-  attr_reader :speed, :wagons, :stantion, :index_station
+  attr_reader :speed, :wagons, :station, :index_station
   NUMBER_FORMAT = /^([a-zа-я]|\d){3}(\-([a-zа-я]|\d){2})?$/i
   @@trains = {}
   def initialize(number_train, company)
@@ -25,51 +25,68 @@ class Train
 
   def route_train(route)
     @route_train = route
-    @stantion = route.stantions.first
-    @stantion.add_train(self)
+    @station = route.stations.first
+    @station.add_train(self)
     @index_station = 0
   end
 
   def delete_station
-    @stantion = nil
+    @station = nil
     @index_station = nil
   end
 
   def next_station
-    if @index_station < @route_train.stantions.size - 1
-      @stantion.delete_train(self)
-      @stantion = @route_train.stantions[@index_station + 1]
+    if @index_station < @route_train.stations.size - 1
+      @station.delete_train(self)
+      @station = @route_train.stations[@index_station + 1]
       @index_station += 1
-      @stantion.add_train(self)
+      @station.add_train(self)
     end
   end
 
   def previous_station
     if @index_station > 0
-      @stantion.delete_train(self)
-      @stantion = @route_train.stantions[@index_station - 1]
+      @station.delete_train(self)
+      @station = @route_train.stations[@index_station - 1]
       @index_station -= 1
-      @stantion.add_train(self)
+      @station.add_train(self)
     end
   end
 
   def add_wagon(wagon)
-    @wagons << wagon if @speed.zero? && @type == wagon.class
+    if wagon.valid? && @speed.zero? && @type == wagon.class && !@wagons.include?(wagon)
+      @wagons << wagon
+      puts "Вагон #{wagon} добавлен"
+    else
+      puts 'Вагон не добавлен'
+    end
+    raise 'wagon can not be nill-value' if wagon.nil?
   end
 
   def delete_wagon(wagon)
-    @wagons.delete(wagon) if @speed.zero?
+    if @speed.zero? && !wagon.nil?
+      @wagons.delete(wagon)
+      puts "Вагон #{wagon} отцеплен"
+    else
+      puts "Вагон #{wagon} не отцеплен"
+    end
   end
 
   def self.find(number_train)
-    @@trains[self] = number_train
     @@trains.each do |train,number|
-      puts "#{@@trains[train]}" if number == number_train
+      puts "#{train}" if number == number_train
     end
   end
 
   def self.trains
     puts "#{@@trains}"
+  end
+
+  def what_station
+    puts "Поезд стоит на станции #{self.station.name}"
+    raise 'Station can not be nill-value ' if self.station.nil?
+  rescue
+    puts 'Не удаловь определить у поезда станцию'
   end
 
   protected

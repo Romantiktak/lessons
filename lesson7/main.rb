@@ -1,7 +1,7 @@
 require_relative 'brand_name'
 require_relative 'instance_counter'
 require_relative 'validation'
-require_relative 'stantion'
+require_relative 'station'
 require_relative 'route'
 require_relative 'wagon'
 require_relative 'wagon_passenger'

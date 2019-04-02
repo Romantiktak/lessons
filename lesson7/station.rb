@@ -1,13 +1,13 @@
-class Stantion
+class Station
   include InstanceCounter
   include Validation
   attr_reader :trains
   attr_accessor :name
-  @@count_stantions = 0
+  @@count_stations = 0
   def initialize(name)
     @name = name
     @trains = []
-    @@count_stantions += 1
+    @@count_stations += 1
     validate!
     register_instance
   end
@@ -31,11 +31,11 @@ class Stantion
   end
 
   def self.all
-    @@count_stantions
+    @@count_stations
   end
 
   protected
   def validate!
-    raise "Stantion should to has name" if self.name.length.zero?
+    raise "Station should to has name" if self.name.length.zero?
   end
 end
