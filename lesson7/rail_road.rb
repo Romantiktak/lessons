@@ -86,14 +86,14 @@ class RailRoad
       number = gets.chomp
       puts "Введите название компании поезда"
       company = gets.chomp
-      train_validate(PassengerTrain, number, company)
+      add_train_type(PassengerTrain, number, company)
     when 2
       puts "Введите номер грузового
       поезда"
       number = gets.chomp
       puts "Введите название компании поезда"
       company = gets.chomp
-      train_validate(CargoTrain, number, company)
+      add_train_type(CargoTrain, number, company)
     else
       create_train
     end
@@ -102,12 +102,11 @@ class RailRoad
   end
 
   # создавать поезд, если данные валидны
-  def train_validate(type_train, number, company)
-    if type_train.new(number, company).valid?
-      @trains << type_train.new(number, company)
+  def add_train_type(type_train, number, company)
+    if @trains << type_train.new(number, company)
       puts "Создан поезд #{@trains.last}"
     else
-      puts "Поезд не создан, данные не валидны"
+      puts "Поезд не создан"
     end
   end
 
@@ -209,6 +208,9 @@ class RailRoad
       count.times do
         @wagons << CargoWagon.new(company)
       end
+    else
+      puts "Неправильный ввод действия"
+      start
     end
     puts "Создано вагонов = #{count}"
     raise 'Введено не натуральное число в поле количества вагонов' if count < 1

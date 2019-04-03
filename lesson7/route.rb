@@ -13,7 +13,7 @@ class Route
     raise 'Станция отсутсвует' if station.nil?
     unless @stations.include?(station)
       @stations.insert(-2, station)
-      puts 'Станция #{station} добавлена в маршрут'
+      puts "Станция #{station} добавлена в маршрут"
     else
       puts 'Станция не добавлена в маршрут'
     end
