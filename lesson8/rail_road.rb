@@ -26,6 +26,8 @@ class RailRoad
       puts 'Введите 11 чтобы найти поезд'
       puts 'Введите 12 чтобы узнать количество экземпларов классов'
       puts 'Введите 13 чтобы отобразить список вагонов у поезда'
+      puts 'Введите 14 чтобы узнать список поездов на станции'
+      puts 'Введите 15 чтобы занять место или объем в вагоне'
       menu = gets.chomp.to_i
       case menu
       when 0
@@ -56,7 +58,10 @@ class RailRoad
         objects_of_classes
       when 13
         list_wagons_of_train
-        find_train { |item| puts "#{item}" }
+      when 14
+        list_trains_of_station
+      when 15
+        add_passenger_or_volume_to_wagon
       else
         puts 'Некорректный ввод'
       end
@@ -66,11 +71,11 @@ class RailRoad
   # создание станций
   def create_station
     puts 'Введите название для создания станции или Enter для выхода'
-    st_name = gets.chomp
-    if st_name.length.zero?
+    station_name = gets.chomp
+    if station_name.length.zero?
       start
     else
-      @stations << Station.new(st_name)
+      @stations << Station.new(station_name)
       puts "Создана станция #{@stations.last}"
       create_station
     end
@@ -102,7 +107,7 @@ class RailRoad
       create_train
     end
   rescue
-    puts 'Train did not create'
+    puts 'Поезд не создан'
   end
 
   # создавать поезд, если данные валидны
@@ -126,16 +131,16 @@ class RailRoad
     @routes << Route.new(@stations[first_index_station - 1], @stations[last_index_station - 1])
     puts 'Маршрут создан!!!'
     puts 'Введите номера станций для добавления через запятую или Enter для выхода'
-    st_name = gets.chomp
-    if st_name.length.zero?
+    station_name = gets.chomp
+    if station_name.length.zero?
       start
     else
-      st_name.split(',').map! { |x| x.to_i }.each do |i|
+      station_name.split(',').map! { |x| x.to_i }.each do |i|
         @routes.last.add_station(@stations[i - 1])
       end
     end
   rescue
-    puts 'Error: Route did not create'
+    puts 'Ошибка: Маршрут не создан!'
   end
 
   # добавление поезда на маршрут
@@ -149,9 +154,9 @@ class RailRoad
     train_index = gets.chomp.to_i
     message_input_number(@trains, train_index)
     @trains[train_index - 1].route_train(@routes[route_index - 1])
-    puts 'Train added on route'
+    puts 'Поезд добавили на маршрут'
   rescue
-    puts 'Error: did not add train'
+    puts 'Ошибка: не добавили поезд'
   end
 
   # вывод списка станций
@@ -161,7 +166,7 @@ class RailRoad
       puts "#{index + 1}: #{station.name}"
     end
   rescue
-    puts 'Error: Station are not absent'
+    puts 'Ошибка: станция отсутствует'
   end
 
   # Вывод списка поездов
@@ -189,7 +194,7 @@ class RailRoad
       class_type = CargoWagon
     end
     @wagons.each_with_index do |wagon, index|
-      puts "#{index + 1}: #{wagon} #{wagon.company}" if wagon.class == class_type
+      puts "#{index + 1}: #{wagon.class} #{wagon.company}" if wagon.class == class_type
     end
   end
 
@@ -223,7 +228,7 @@ class RailRoad
     puts "Создано вагонов = #{count}"
     raise 'Введено не натуральное число в поле количества вагонов' if count < 1
   rescue
-    puts  'Wagons did not create'
+    puts  'Вагоны не созданы'
   end
 
   # Прицепить вагон к поезду
@@ -240,7 +245,7 @@ class RailRoad
       @trains[train_index - 1].add_wagon(@wagons[i.to_i - 1])
     end
   rescue
-    puts 'Did not add wagon'
+    puts 'Не добавили вагон'
   end
 
   # Отцепить вагон от поезда
@@ -263,7 +268,7 @@ class RailRoad
       start
     end
   rescue
-    puts 'Did not delete wagon'
+    puts 'Не отцепили вагон'
   end
 
   # Переместить поезд на следующую станцию
@@ -276,6 +281,7 @@ class RailRoad
 
   # Цикл с выводом меню для перемещения поезда
   def loop_move_train(train_index)
+    puts 'Поезд стоит на станции: '
     @trains[train_index - 1].what_station
     puts 'Введите 0 для выхода'
     puts 'Введите 1 для перемещения поезда на следующую станцию'
@@ -308,7 +314,42 @@ class RailRoad
     show_trains
     puts 'Введите номер поезда'
     number = gets.chomp.to_i
-    @trains[number - 1].wagon_to_block { |wagon| puts "вагон #{wagon} #{wagon.company}" }
+    train = @trains[number - 1]
+    if train.class == CargoTrain
+      train.each_wagon{ |wagon| puts " Тип: #{wagon.class}, Объема свободно: #{wagon.free_volume}, занято: #{wagon.occupied_volume}" }
+    elsif train.class == PassengerTrain
+      train.each_wagon{ |wagon| puts " Тип: #{wagon.class}, Мест свободно: #{wagon.free_seats}, занято: #{wagon.occupied_seats}" }
+    end
+  end
+
+  def add_passenger_or_volume_to_wagon
+    show_trains
+    puts 'Выберите поезд'
+    number_train = gets.chomp.to_i
+    train = @trains[number_train - 1]
+    show_wagons(train)
+    puts 'Выберите вагон'
+    number = gets.chomp.to_i
+    wagon = @wagons[number - 1]
+    if wagon.class == PassengerWagon
+      puts 'Сколько мест занять в вагоне?'
+      seats = gets.chomp.to_i
+      wagon.buy_seat(seats)
+      puts "Свободных мест #{wagon.free_seats}, Занятых #{wagon.occupied_seats}"
+    elsif wagon.class == CargoWagon
+      puts 'Какой объем занять в вагоне?'
+      volume = gets.chomp.to_i
+      wagon.take_volume(volume)
+      puts "Свободный объем #{wagon.free_volume}, Занятый #{wagon.occupied_volume}"
+    end
+  end
+
+  def list_trains_of_station
+    show_stations
+    puts 'Введите номер станции'
+    number = gets.chomp.to_i
+    station = @stations[number - 1]
+    station.each_train { |train| puts "Поезд №  #{Train.number_train(train)}, Тип: #{train.type}, Кол-во вагонов: #{train.how_many_wagons}" }
   end
 
   # Вывод количество экземпляров класса

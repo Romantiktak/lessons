@@ -7,6 +7,6 @@ module Validation
   end
 
   def valid_zero(number)
-    raise "You can't to inpute zero value" if number.zero?
+    raise "Ты не можешь вставить нулевое значение" if number.zero?
   end
 end

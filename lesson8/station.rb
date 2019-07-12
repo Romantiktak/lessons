@@ -3,7 +3,9 @@ class Station
   include Validation
   attr_reader :trains
   attr_accessor :name
+
   @@count_stations = 0
+
   def initialize(name)
     @name = name
     @trains = []
@@ -34,12 +36,13 @@ class Station
     @@count_stations
   end
 
-  def train_to_block(trains)
+  def each_train
     self.trains.each { |train| yield(train) }
   end
 
   protected
+
   def validate!
-    raise "Station should to has name" if self.name.length.zero?
+    raise "Станция должна иметь имя" if self.name.length.zero?
   end
 end

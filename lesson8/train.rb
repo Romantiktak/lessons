@@ -3,8 +3,11 @@ class Train
   include InstanceCounter
   include Validation
   attr_reader :speed, :wagons, :station, :index_station
+
   NUMBER_FORMAT = /^([a-zа-я]|\d){3}(\-([a-zа-я]|\d){2})?$/i
+
   @@trains = {}
+
   def initialize(number_train, company)
     @wagons = []
     @speed = 0
@@ -56,20 +59,15 @@ class Train
   def add_wagon(wagon)
     if wagon.valid? && @speed.zero? && @type == wagon.class && !@wagons.include?(wagon)
       @wagons << wagon
-      puts "Вагон #{wagon} добавлен"
-    else
-      puts 'Вагон не добавлен'
     end
-    raise 'wagon can not be nill-value' if wagon.nil?
+    raise 'Вагон не может иметь пустое значение' if wagon.nil?
   end
 
   def delete_wagon(wagon)
-    if @speed.zero? && !wagon.nil?]
+    if @speed.zero? && !wagon.nil?
       @wagons.delete(wagon)
-      puts "Вагон #{wagon} отцеплен"
-    else
-      puts "Вагон #{wagon} не отцеплен"
     end
+    raise 'Вагон отсутствует' if wagon.nil?
   end
 
   def self.find(number_train)
@@ -78,25 +76,34 @@ class Train
     end
   end
 
+  def self.number_train(object_train)
+    @@trains.each do |train,number|
+      return number if train == object_train
+    end
+  end
+
   def self.trains
     puts "#{@@trains}"
   end
 
   def what_station
-    puts "Поезд стоит на станции #{self.station.name}"
-    raise 'Station can not be nill-value ' if self.station.nil?
-  rescue
-    puts 'Не удаловь определить у поезда станцию'
+    self.station.name
+    raise 'Станция не может иметь Nill-значение ' if self.station.nil?
   end
 
-  def wagon_to_block
-    self.wagons.each { |wagon| yield(wagon) }
+  def each_wagon
+    i = 0
+    self.wagons.each {|wagon| puts "#{i+=1} -- "; yield(wagon) }
+  end
+
+  def how_many_wagons
+    return self.wagons.size
   end
 
   protected
   def validate!
-    raise "Comhany can't be empty String" if self.company.length.zero?
-    raise "Format number isn't match" if @@trains[self] !~ NUMBER_FORMAT
+    raise "Компания не может быть пустой строкой" if self.company.length.zero?
+    raise "Формат номера не соответствует" if @@trains[self] !~ NUMBER_FORMAT
   end
 end
 
