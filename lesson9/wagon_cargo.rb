@@ -10,9 +10,9 @@ class CargoWagon < Wagon
   end
 
   def take_volume(volume)
-    if @free_volume.positive?
+    return unless @free_volume.positive?
+
       @free_volume -= volume
       @occupied_volume += volume
-    end
   end
 end

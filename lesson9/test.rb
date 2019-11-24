@@ -1,5 +1,4 @@
-# frozen_string_literal: true
-
+# rubocop:disable Layout/LeadingCommentSpace, Lint/RedundantCopDisableDirective, Lint/UselessAssignment, Lint/UselessAssignment
 require_relative 'brand_name'
 require_relative 'instance_counter'
 require_relative 'validation'
@@ -53,3 +52,5 @@ train_passenger1_id.each_wagon do |wagon|
 end
 
 Train.trains.class
+
+# rubocop:enable Layout/LeadingCommentSpace, Lint/RedundantCopDisableDirective, Lint/UselessAssignment, Lint/UselessAssignment

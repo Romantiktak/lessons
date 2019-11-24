@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/BlockLength
 class RailRoad
   include InstanceCounter
   include Validation
@@ -398,3 +399,4 @@ class RailRoad
     end
   end
 end
+# rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/BlockLength
