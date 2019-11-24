@@ -11,6 +11,5 @@ require_relative 'train_passenger'
 require_relative 'train_cargo'
 require_relative 'rail_road'
 
-
 road = RailRoad.new
 road.start

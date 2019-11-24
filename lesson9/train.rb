@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class Train
   include BrandName
   include InstanceCounter
   include Validation
   attr_reader :speed, :wagons, :station, :index_station, :company
 
-  NUMBER_FORMAT = /^([a-zа-я]|\d){3}(\-([a-zа-я]|\d){2})?$/i
+  NUMBER_FORMAT = /^([a-zа-я]|\d){3}(\-([a-zа-я]|\d){2})?$/i.freeze
 
   @@trains = {}
 
@@ -39,71 +41,73 @@ class Train
   end
 
   def next_station
-    if @index_station < @route_train.stations.size - 1
-      @station.delete_train(self)
-      @station = @route_train.stations[@index_station + 1]
-      @index_station += 1
-      @station.add_train(self)
-    end
+    return unless @index_station > @route_train.stations.size - 1
+
+    @station.delete_train(self)
+    @station = @route_train.stations[@index_station + 1]
+    @index_station += 1
+    @station.add_train(self)
   end
 
   def previous_station
-    if @index_station > 0
-      @station.delete_train(self)
-      @station = @route_train.stations[@index_station - 1]
-      @index_station -= 1
-      @station.add_train(self)
-    end
+    return unless @index_station.negative?
+
+    @station.delete_train(self)
+    @station = @route_train.stations[@index_station - 1]
+    @index_station -= 1
+    @station.add_train(self)
   end
 
   def add_wagon(wagon)
-    if wagon.valid? && @speed.zero? && @type == wagon.class && !@wagons.include?(wagon)
-      @wagons << wagon
-    end
-    raise 'Вагон не может иметь пустое значение' if wagon.nil?
+    @wagons << wagon if wagon.valid? &&
+                        @speed.zero? && @type == wagon.class &&
+                        !@wagons.include?(wagon)
+
+    raise 'Wagon cannot empty value' if wagon.nil?
   end
 
   def delete_wagon(wagon)
-    if @speed.zero? && !wagon.nil?
-      @wagons.delete(wagon)
-    end
-    raise 'Вагон отсутствует' if wagon.nil?
+    @wagons.delete(wagon) if @speed.zero? && !wagon.nil?
+    raise 'No Wagon' if wagon.nil?
   end
 
   def self.find(number_train)
-    @@trains.each do |train,number|
+    @@trains.each do |train, number|
       return train if number == number_train
     end
   end
 
   def self.number_train(object_train)
-    @@trains.each do |train,number|
+    @@trains.each do |train, number|
       return number if train == object_train
     end
   end
 
   def self.trains
-    puts "#{@@trains}"
+    puts @@trains.to_s
   end
 
   def what_station
-    self.station.name
-    raise 'Станция не может иметь Nill-значение ' if self.station.nil?
+    station.name
+    raise 'Station cannot Nil value' if station.nil?
   end
 
   def each_wagon
     i = 0
-    self.wagons.each {|wagon| puts "#{i+=1} -- "; yield(wagon) }
+    wagons.each do |wagon|
+      puts "#{i += 1} -- "
+      yield(wagon)
+    end
   end
 
   def how_many_wagons
-    return self.wagons.size
+    wagons.size
   end
 
   protected
+
   def validate!
-    raise "Компания не может быть пустой строкой" if self.company.length.zero?
-    raise "Формат номера не соответствует" if @@trains[self] !~ NUMBER_FORMAT
+    raise 'Company cannot empty' if company.length.zero?
+    raise 'Not correct format number' if @@trains[self] !~ NUMBER_FORMAT
   end
 end
-

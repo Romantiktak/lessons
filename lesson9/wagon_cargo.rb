@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CargoWagon < Wagon
   attr_reader :occupied_volume, :free_volume
 
@@ -8,10 +10,9 @@ class CargoWagon < Wagon
   end
 
   def take_volume(volume)
-    if @free_volume > 0
+    if @free_volume.positive?
       @free_volume -= volume
       @occupied_volume += volume
     end
   end
-
 end

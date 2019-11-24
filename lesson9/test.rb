@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'brand_name'
 require_relative 'instance_counter'
 require_relative 'validation'
@@ -11,39 +13,43 @@ require_relative 'train_passenger'
 require_relative 'train_cargo'
 require_relative 'rail_road'
 
-station_1 = Station.new(name: "Первая")
-station_2 = Station.new(name: "Вторая")
-station_3 = Station.new(name: "Третья")
-station_4 = Station.new(name: "Четвертая")
+station_1_id = Station.new(name: 'Первая')
+station_2_id = Station.new(name: 'Вторая')
+station_3_id = Station.new(name: 'Третья')
+station_4_id = Station.new(name: 'Четвертая')
 
-route1 = Route.new(station_1, station_4)
-route1.add_station(station_2)
-route1.add_station(station_3)
+route1_id = Route.new(station_1_id, station_4_id)
+route1_id.add_station(station_2_id)
+route1_id.add_station(station_3_id)
 
-route2 = Route.new(station_2, station_4)
+route2_id = Route.new(station_2_id, station_4_id)
 
-train_cargo1 = CargoTrain.new("101", :company => "gruzrail")
-train_cargo2 = CargoTrain.new("102", :company => "gaz")
-train_passenger1 = PassengerTrain.new("201", :company => "pass")
-train_passenger2 = PassengerTrain.new("202", :company => "rzd")
+train_cargo1_id = CargoTrain.new('101', company: 'gruzrail')
+train_cargo2_id = CargoTrain.new('102', company: 'gaz')
+train_passenger1_id = PassengerTrain.new('201', company: 'pass')
+train_passenger2_id = PassengerTrain.new('202', company: 'rzd')
 
-train_cargo1.route_train(route1)
-train_passenger1.route_train(route2)
+train_cargo1_id.route_train(route1_id)
+train_passenger1_id.route_train(route2_id)
 
 cargo_wagon = Array.new(5)
 passenger_wagon = Array.new(5)
 
 5.times do |i|
-  cargo_wagon[i] = CargoWagon.new(:company => "cargo" + i.to_s, :free_volume => (i+1)*25)
-  train_cargo1.add_wagon(cargo_wagon[i])
-  passenger_wagon[i] = PassengerWagon.new(:company => "pass" + i.to_s, :free_seats => (i+1)*10)
-  train_passenger1.add_wagon(passenger_wagon[i])
+  cargo_wagon[i] =
+    CargoWagon.new(company: 'cargo' + i.to_s, free_volume: (i + 1) * 25)
+  train_cargo1_id.add_wagon(cargo_wagon[i])
+  passenger_wagon[i] =
+    PassengerWagon.new(company: 'pass' + i.to_s, free_seats: (i + 1) * 10)
+  train_passenger1_id.add_wagon(passenger_wagon[i])
 end
 
-#puts "Созданный поезд #{train_cargo1}"
-
-train_cargo1.each_wagon { |wagon| puts "Номер вагона: #{wagon.free_volume}, компания: #{wagon.company}" }
-puts " -------- "
-train_passenger1.each_wagon { |wagon| puts "Номер вагона: #{wagon.free_seats}, компания: #{wagon.company}" }
+train_cargo1_id.each_wagon do |wagon|
+  puts "Wagon number: #{wagon.free_volume}, company is #{wagon.company}"
+end
+puts ' -------- '
+train_passenger1_id.each_wagon do |wagon|
+  puts "Wagon number: #{wagon.free_seats}, company is #{wagon.company}"
+end
 
 Train.trains.class

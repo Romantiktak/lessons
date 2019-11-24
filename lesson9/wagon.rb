@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Wagon
   include BrandName
   include Validation
@@ -10,7 +12,6 @@ class Wagon
   protected
 
   def validate!
-    raise "Компания не может быть пустой строкой" if self.company.length.zero?
+    raise 'Компания не может быть пустой строкой' if company.length.zero?
   end
 end
-

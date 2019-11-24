@@ -9,7 +9,7 @@ class Station
   def initialize(options = {})
     @name = options[:name] || 'Unknown'
     @trains = options[:trains] || []
-    @@count_stations += 1 || 0
+    @@count_stations += 1
     validate!
     register_instance
   end
@@ -37,12 +37,12 @@ class Station
   end
 
   def each_train
-    self.trains.each { |train| yield(train) }
+    trains.each { |train| yield(train) }
   end
 
   protected
 
   def validate!
-    raise "Станция должна иметь имя" if self.name.length.zero?
+    raise 'Станция должна иметь имя' if name.length.zero?
   end
 end

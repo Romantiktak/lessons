@@ -28,8 +28,8 @@ class RailRoad
       puts 'Введите 13 чтобы отобразить список вагонов у поезда'
       puts 'Введите 14 чтобы узнать список поездов на станции'
       puts 'Введите 15 чтобы занять место или объем в вагоне'
-      menu = gets.chomp.to_i
-      case menu
+      answer = gets.chomp.to_i
+      case answer
       when 0
         break
       when 1
@@ -66,7 +66,7 @@ class RailRoad
         puts 'Некорректный ввод'
       end
     end
- end
+  end
 
   # создание станций
   def create_station
@@ -86,27 +86,9 @@ class RailRoad
     puts 'Введите 0 для выхода'
     puts 'Введите 1 для создания пассажирского поезда'
     puts 'Введите 2 для создания грузового поезда'
-    type = gets.chomp.to_i
-    case type
-    when 0
-      start
-    when 1
-      puts 'Введите номер пассажирского поезда'
-      number = gets.chomp
-      puts "Введите название компании поезда"
-      company = gets.chomp
-      add_train_type(PassengerTrain, number, company)
-    when 2
-      puts "Введите номер грузового
-      поезда"
-      number = gets.chomp
-      puts "Введите название компании поезда"
-      company = gets.chomp
-      add_train_type(CargoTrain, number, company)
-    else
-      create_train
-    end
-  rescue
+    answer = gets.chomp.to_i
+    type(answer)
+  rescue StandardError
     puts 'Поезд не создан'
   end
 
@@ -115,7 +97,7 @@ class RailRoad
     if @trains << type_train.new(number, company: company)
       puts "Создан поезд #{@trains.last}"
     else
-      puts "Поезд не создан"
+      puts 'Поезд не создан'
     end
   end
 
@@ -135,11 +117,11 @@ class RailRoad
     if station_name.length.zero?
       start
     else
-      station_name.split(',').map! { |x| x.to_i }.each do |i|
+      station_name.split(',').map!(&:to_i).each do |i|
         @routes.last.add_station(@stations[i - 1])
       end
     end
-  rescue
+  rescue StandardError
     puts 'Ошибка: Маршрут не создан!'
   end
 
@@ -155,7 +137,7 @@ class RailRoad
     message_input_number(@trains, train_index)
     @trains[train_index - 1].route_train(@routes[route_index - 1])
     puts 'Поезд добавили на маршрут'
-  rescue
+  rescue StandardError
     puts 'Ошибка: не добавили поезд'
   end
 
@@ -165,7 +147,7 @@ class RailRoad
     @stations.each_with_index do |station, index|
       puts "#{index + 1}: #{station.name}"
     end
-  rescue
+  rescue StandardError
     puts 'Ошибка: станция отсутствует'
   end
 
@@ -209,25 +191,10 @@ class RailRoad
     count = gets.chomp.to_i
     puts 'Какой фирмы эти вагоны?'
     company = gets.chomp
-    if type == 1
-      puts 'Введите количество пассажирских мест'
-      seats = gets.chomp.to_i
-      count.times do
-        @wagons << PassengerWagon.new(company: company, free_seats: seats)
-      end
-    elsif type == 2
-      puts 'Введите объем вагона в натуральных единицах'
-      volume = gets.chomp.to_i
-      count.times do
-        @wagons << CargoWagon.new(company: company, free_volume: volume)
-      end
-    else
-      puts "Неправильный ввод действия"
-      start
-    end
+    type_wagon(type, company)
     puts "Создано вагонов = #{count}"
     raise 'Введено не натуральное число в поле количества вагонов' if count < 1
-  rescue
+  rescue StandardError
     puts  'Вагоны не созданы'
   end
 
@@ -241,10 +208,11 @@ class RailRoad
     puts 'Введите номера вагонов через запятую'
     wagons_index = gets.chomp.split(',')
     raise 'Номера вагонов не введены' if wagons_index.empty?
+
     wagons_index.each do |i|
       @trains[train_index - 1].add_wagon(@wagons[i.to_i - 1])
     end
-  rescue
+  rescue StandardError
     puts 'Не добавили вагон'
   end
 
@@ -253,21 +221,21 @@ class RailRoad
     show_trains
     puts 'Введите номер поезда'
     train_index = gets.chomp.to_i
-    unless @trains[train_index - 1].wagons.empty?
+    if @trains[train_index - 1].wagons.empty?
+      puts 'Нет доступных вагонов для отцепки'
+      start
+    else
       puts 'Перечислите через запятую номера вагонов, которые нужно отцепить:'
       @trains[train_index - 1].wagons.each_with_index do |wagon, index|
         puts "#{index + 1}: #{wagon}"
       end
-      wagons_index = gets.chomp.split(',').map! { |x| x = x.to_i }
+      wagons_index = gets.chomp.split(',').map!(&:to_i)
       wagons_index.reverse_each do |i|
         wagon_delete = @trains[train_index - 1].wagons[i - 1]
         @trains[train_index - 1].delete_wagon(wagon_delete)
       end
-    else
-      puts "Нет доступных вагонов для отцепки"
-      start
     end
-  rescue
+  rescue StandardError
     puts 'Не отцепили вагон'
   end
 
@@ -299,7 +267,7 @@ class RailRoad
     else
       move_train_to_station
     end
-  rescue
+  rescue StandardError
     puts 'Ошибка: Нельзя переместить поезд!'
   end
 
@@ -316,9 +284,17 @@ class RailRoad
     number = gets.chomp.to_i
     train = @trains[number - 1]
     if train.class == CargoTrain
-      train.each_wagon{ |wagon| puts " Тип: #{wagon.class}, Объема свободно: #{wagon.free_volume}, занято: #{wagon.occupied_volume}" }
+      train.each_wagon do |wagon|
+        puts " Тип: #{wagon.class},
+        Объем свободно: #{wagon.free_volume},
+        занято: #{wagon.occupied_volume}"
+      end
     elsif train.class == PassengerTrain
-      train.each_wagon{ |wagon| puts " Тип: #{wagon.class}, Мест свободно: #{wagon.free_seats}, занято: #{wagon.occupied_seats}" }
+      train.each_wagon do |wagon|
+        puts " Тип: #{wagon.class},
+        Мест свободно: #{wagon.free_seats},
+        занято: #{wagon.occupied_seats}"
+      end
     end
   end
 
@@ -349,7 +325,11 @@ class RailRoad
     puts 'Введите номер станции'
     number = gets.chomp.to_i
     station = @stations[number - 1]
-    station.each_train { |train| puts "Поезд №  #{Train.number_train(train)}, Тип: #{train.type}, Кол-во вагонов: #{train.how_many_wagons}" }
+    station.each_train do |train|
+      puts "Поезд №  #{Train.number_train(train)},
+      Тип: #{train.type},
+      Кол-во вагонов: #{train.how_many_wagons}"
+    end
   end
 
   # Вывод количество экземпляров класса
@@ -365,16 +345,56 @@ class RailRoad
   end
 
   def message_return_start(object, name_class)
-    unless object.length.zero?
-      puts "Список имеющихся #{object.first.class}"
-    else
+    if object.length.zero?
       puts "Не создано ниодного экземпляра #{name_class}"
       start
+    else
+      puts "Список имеющихся #{object.first.class}"
     end
   end
 
   def message_input_number(array, number)
-    raise "номер за рамками диапазона" if number > array.length || number < 1
+    raise 'номер за рамками диапазона' if number > array.length || number < 1
+  end
+
+  def type(value)
+    case value
+    when 0
+      start
+    when 1
+      puts 'Введите номер пассажирского поезда'
+      number = gets.chomp
+      puts 'Введите название компании поезда'
+      company = gets.chomp
+      add_train_type(PassengerTrain, number, company)
+    when 2
+      puts "Введите номер грузового
+      поезда"
+      number = gets.chomp
+      puts 'Введите название компании поезда'
+      company = gets.chomp
+      add_train_type(CargoTrain, number, company)
+    else
+      create_train
+    end
+  end
+
+  def type_wagon(type, company)
+    if type == 1
+      puts 'Введите количество пассажирских мест'
+      seats = gets.chomp.to_i
+      count.times do
+        @wagons << PassengerWagon.new(company: company, free_seats: seats)
+      end
+    elsif type == 2
+      puts 'Введите объем вагона в натуральных единицах'
+      volume = gets.chomp.to_i
+      count.times do
+        @wagons << CargoWagon.new(company: company, free_volume: volume)
+      end
+    else
+      puts 'Неправильный ввод действия'
+      start
+    end
   end
 end
-

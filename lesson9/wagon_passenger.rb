@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PassengerWagon < Wagon
   attr_reader :free_seats, :occupied_seats
 
@@ -8,10 +10,6 @@ class PassengerWagon < Wagon
   end
 
   def buy_seat(places)
-    @free_seats -= places if @free_seats > 0
-  end
-
-  def occupied_seats
-    @occupied_seats = @seats - @free_seats
+    @free_seats -= places if @free_seats.positive?
   end
 end
