@@ -15,7 +15,6 @@ class Train
   def initialize(number_train, options = {})
     @wagons = options[:wagons] || []
     @speed = options[:speed] || 0
-    # @type = options[:type] || nil
     self.company = options[:company] || 'Unknown'
     @number_train = number_train
     @@trains[self] = number_train
